@@ -2,51 +2,79 @@ import { displayScrollingText } from "./bettercombatdamage.js";
 import { BCD_FIELDS, getUpdatedField } from "./utils.js";
 import { BCDSettings } from "./settings.js"
 
+const ACTOR_UPDATES = {}
+let ignoreNextActorHPChange = {}
+Hooks.on("updateActor", (actor, update, opts) => {
+	if(ACTOR_UPDATES[actor._id]) {
+		actor.update(ACTOR_UPDATES[actor._id]);
+		delete ACTOR_UPDATES[actor._id];
+	}
+});
+
 // Attach to actor updates
 Hooks.on("preUpdateActor", (actor, update, opts) => {
-	// Do nothing if the scrolling text is globally disabled
-	if(!BCDSettings.scrollTextEnabled) 
-		return;
-
-	let diff = null, pct = null, color = null;
 	// If a supported value was updated, process the change
-	switch (getUpdatedField(update)) {
-		case BCD_FIELDS.HP:
-			// Do nothing is this field is disabled
-			if(!BCDSettings.hitPointsEnabled)
+	const updatedFields = getUpdatedField(update);
+	for (let i in updatedFields) {
+		let diff = null, color = null;
+		switch(updatedFields[i]) {
+			case BCD_FIELDS.HP:
+				// Calculate the change in HP
+				if (typeof opts.dhp !== 'undefined') {
+					diff = opts.dhp;
+				} else {
+					diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
+				}
+
+				// Check if Fortitude Points are on and whether the HP change would kill the actor
+				let fortitudeDiff = 0, hpDiff = diff;
+				if(BCDSettings.fortitudePointsEnabled && actor.system.resources?.legres?.value > 0 && actor.system.attributes.hp.value + diff <= 0) {
+					hpDiff = 1 - actor.system.attributes.hp.value;
+					fortitudeDiff = (diff - hpDiff);
+					ignoreNextActorHPChange[actor._id] = true;
+
+					// If the difference is such that completely exhausts the fortitude points, add the rest to the hpDiff
+					if (Math.abs(fortitudeDiff) > actor.system.resources.legres.value) {
+						fortitudeDiff = -actor.system.resources.legres.value;
+						hpDiff = diff - fortitudeDiff;
+						ignoreNextActorHPChange[actor._id] = false;
+					}
+
+					// Update the actor legendary resistance value
+					ACTOR_UPDATES[actor._id] = {
+						"system.resources.legres.value": Math.max(actor.system.resources.legres.value + fortitudeDiff, 0),
+						"system.attributes.hp.value": Math.max(actor.system.attributes.hp.value + hpDiff, 0)
+					};
+				}
+
+				// Display the hit points scrolling text
+				if(BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+					if(!ignoreNextActorHPChange[actor._id]) {
+						if(hpDiff != 0) {
+							color = hpDiff < 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
+							setTimeout(() => {displayScrollingText(actor, hpDiff, color);}, 0);
+						}
+					} else ignoreNextActorHPChange[actor._id] = false;
+				}
+				break;
+			case BCD_FIELDS.LEGENDARY_RESISTANCE:
+				// Calculate the legendary resistance difference	
+				diff = update.system.resources.legres.value - actor.system.resources.legres.value;
+
+				// Display the scrolling text
+				if(BCDSettings.scrollTextEnabled && BCDSettings.legendaryResistanceEnabled) {
+					setTimeout(() => {displayScrollingText(actor, diff, BCDSettings.legendaryResistanceColor);}, 750);
+				}
+				break;
+			default:
+				// Do nothing if a non supported field is updated
 				return;
-			
-			if (typeof opts.dhp !== 'undefined') {
-				diff = opts.dhp;
-			} else {
-				diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
-			}
-
-			pct = Math.clamped(Math.abs(diff) / actor.system.attributes.hp.max, 0, 1);
-			color = diff < 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
-
-			// Display the scrolling text
-			displayScrollingText(actor, diff, pct, color);
-			break;
-		case BCD_FIELDS.LEGENDARY_RESISTANCE:
-			// Do nothing is this field is disabled
-			if(!BCDSettings.legendaryResistanceEnabled)
-				return;
-			
-			diff = update.system.resources.legres.value - actor.system.resources.legres.value;
-			pct = Math.clamped(Math.abs(diff) / actor.system.resources.legres.max, 0, 1);
-			color = BCDSettings.legendaryResistanceColor;
-
-			// Display the scrolling text
-			displayScrollingText(actor, diff, pct, color);
-			break;
-		default:
-			// Do nothing if a non supported field is updated
-			return;
+		}
 	}
 });
 
 Hooks.once("init", () => {
+	// Init the settings
 	BCDSettings.init();
 	// Disable the normal scrolling text
 	libWrapper.register("bettercombatdamage", "CONFIG.Actor.documentClass.prototype._displayScrollingDamage", (_) => {}, "OVERRIDE", {chain: true});

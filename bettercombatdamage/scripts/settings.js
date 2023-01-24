@@ -9,39 +9,24 @@ class Settings {
 	 * This should only be called once, at initialization.
 	 */
 	init() {
+		
+		game.settings.register("bettercombatdamage", "fortitudePointsEnabled", {
+			name: "Enable Fortitute Points",
+			hint: "Use Legendary Resistance as Fortitude Points (Ishiir).",
+			scope: "world",
+			config: true,
+			default: true,
+			type: Boolean
+		});
+
 		game.settings.register("bettercombatdamage", "scrollTextEnabled", {
-			name: "Enable Better Scrolling Text",
+			name: "Enable Damage Scrolling Text",
 			hint: "Enables/Disables the module without having to restart Foundry.",
 			scope: "world",
 			config: true,
 			default: true,
 			type: Boolean
 		});
-
-		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
-			name: "Legendary Resistance",
-			hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
-			scope: "world",
-			config: true,
-			default: true,
-			type: Boolean
-		});
-
-		ColorPicker.register(
-			"bettercombatdamage",
-			"legendaryResistanceColor", 
-			{
-			  name: "Legendary Resistance Text Color",
-			  hint: "Sets the scrolling text color of the legendary resistance.",
-			  scope: "client",
-			  config: true,
-			  default: "#FFB300FF"
-			},
-			{
-			  format: "hexa",
-			  alphaChannel: true
-			}
-		)
 
 		game.settings.register("bettercombatdamage", "hitPointsEnabled", {
 			name: "Hit Points",
@@ -83,18 +68,39 @@ class Settings {
 			  alphaChannel: true
 			}
 		)
+
+		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
+			name: "Legendary Resistance",
+			hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
+			scope: "world",
+			config: true,
+			default: true,
+			type: Boolean
+		});
+
+		ColorPicker.register(
+			"bettercombatdamage",
+			"legendaryResistanceColor", 
+			{
+			  name: "Legendary Resistance Text Color",
+			  hint: "Sets the scrolling text color of the legendary resistance.",
+			  scope: "client",
+			  config: true,
+			  default: "#FFB300FF"
+			},
+			{
+			  format: "hexa",
+			  alphaChannel: true
+			}
+		)
+	}
+
+	get fortitudePointsEnabled() {
+		return getBCDSetting("fortitudePointsEnabled");
 	}
 
 	get scrollTextEnabled() {
 		return getBCDSetting("scrollTextEnabled");
-	}
-
-	get legendaryResistanceEnabled() {
-		return getBCDSetting("legendaryResistanceEnabled");
-	}
-
-	get legendaryResistanceColor() {
-		return getBCDSetting("legendaryResistanceColor");
 	}
 
 	get hitPointsEnabled() {
@@ -107,6 +113,14 @@ class Settings {
 
 	get hitPointsHealingColor() {
 		return getBCDSetting("hitPointsHealingColor");
+	}
+
+	get legendaryResistanceEnabled() {
+		return getBCDSetting("legendaryResistanceEnabled");
+	}
+
+	get legendaryResistanceColor() {
+		return getBCDSetting("legendaryResistanceColor");
 	}
 }
 

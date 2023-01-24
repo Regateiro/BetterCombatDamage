@@ -7,10 +7,15 @@ export const BCD_FIELDS = {
 
 // Determines the updated field
 export function getUpdatedField(update) {
-    if(typeof update.system?.resources?.legres?.value !== 'undefined') {
-        return BCD_FIELDS.LEGENDARY_RESISTANCE;
-    } else if (typeof update.system?.attributes?.hp?.value !== 'undefined') {
-        return BCD_FIELDS.HP;
+    let fields = [];
+
+    if (typeof update.system?.attributes?.hp?.value !== 'undefined') {
+        fields.push(BCD_FIELDS.HP);
     }
-    return BCD_FIELDS.NONE;
+
+    if(typeof update.system?.resources?.legres?.value !== 'undefined') {
+        fields.push(BCD_FIELDS.LEGENDARY_RESISTANCE);
+    } 
+
+    return fields;
 }
