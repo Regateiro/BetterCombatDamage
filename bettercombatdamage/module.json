@@ -1,5 +1,5 @@
 {
-    "name": "bettercombatdamage",
+    "id": "bettercombatdamage",
     "title": "Better Combat Damage",
     "description": "This module enhances the calculation and display of combat damage and scrolling text.",
     "authors": [
@@ -22,7 +22,6 @@
         "systems": [
             {
                 "id": "dnd5e",
-                "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
                 "compatibility": {
                     "minimum": "2.0.0",
                     "verified": "2.1.2"
@@ -33,7 +32,6 @@
             {
                 "id": "color-picker",
                 "type": "module",
-                "manifest": "https://github.com/Larkinabout/fvtt-color-picker/releases/latest/download/module.json",
                 "compatibility": {
                     "minimum": "1.2",
                     "verified": "1.2"
@@ -42,7 +40,6 @@
             {
                 "id": "libWrapper",
                 "type": "module",
-                "manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
                 "compatibility": {
                     "minimum": "1.12.11.0",
                     "verified": "1.12.11.0"
