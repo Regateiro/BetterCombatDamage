@@ -1,9 +1,9 @@
-INSTALL_PATH=~/.local/share/FoundryVTT/Data/modules/betterscrollingtext
+INSTALL_PATH=~/.local/share/FoundryVTT/Data/modules/bettercombatdamage
 
 .PHONY: compress local-install
 
 compress:
-	cd betterscrollingtext/ && zip -r module.zip * && mv module.zip ../
+	cd bettercombatdamage/ && zip -r module.zip * && mv module.zip ../
 
 local-install: compress
 	rm -rf $(INSTALL_PATH)

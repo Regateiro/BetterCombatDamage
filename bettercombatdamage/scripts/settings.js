@@ -1,4 +1,4 @@
-const getBSTSetting = (setting) => game.settings.get("betterscrollingtext", setting);
+const getBCDSetting = (setting) => game.settings.get("bettercombatdamage", setting);
 
 /**
  * Class type used to initialize and retrieve settings.
@@ -9,7 +9,7 @@ class Settings {
 	 * This should only be called once, at initialization.
 	 */
 	init() {
-		game.settings.register("betterscrollingtext", "scrollTextEnabled", {
+		game.settings.register("bettercombatdamage", "scrollTextEnabled", {
 			name: "Enable Better Scrolling Text",
 			hint: "Enables/Disables the module without having to restart Foundry.",
 			scope: "world",
@@ -18,7 +18,7 @@ class Settings {
 			type: Boolean
 		});
 
-		game.settings.register("betterscrollingtext", "legendaryResistanceEnabled", {
+		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
 			name: "Legendary Resistance",
 			hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
 			scope: "world",
@@ -28,7 +28,7 @@ class Settings {
 		});
 
 		ColorPicker.register(
-			"betterscrollingtext",
+			"bettercombatdamage",
 			"legendaryResistanceColor", 
 			{
 			  name: "Legendary Resistance Text Color",
@@ -43,7 +43,7 @@ class Settings {
 			}
 		)
 
-		game.settings.register("betterscrollingtext", "hitPointsEnabled", {
+		game.settings.register("bettercombatdamage", "hitPointsEnabled", {
 			name: "Hit Points",
 			hint: "Enables/Disables the display of the scrolling text for hit points.",
 			scope: "world",
@@ -53,7 +53,7 @@ class Settings {
 		});
 
 		ColorPicker.register(
-			"betterscrollingtext",
+			"bettercombatdamage",
 			"hitPointsDamageColor", 
 			{
 			  name: "Hit Points Damage Text Color",
@@ -69,7 +69,7 @@ class Settings {
 		)
 		
 		ColorPicker.register(
-			"betterscrollingtext",
+			"bettercombatdamage",
 			"hitPointsHealingColor", 
 			{
 			  name: "Hit Points Healing Text Color",
@@ -86,31 +86,31 @@ class Settings {
 	}
 
 	get scrollTextEnabled() {
-		return getBSTSetting("scrollTextEnabled");
+		return getBCDSetting("scrollTextEnabled");
 	}
 
 	get legendaryResistanceEnabled() {
-		return getBSTSetting("legendaryResistanceEnabled");
+		return getBCDSetting("legendaryResistanceEnabled");
 	}
 
 	get legendaryResistanceColor() {
-		return getBSTSetting("legendaryResistanceColor");
+		return getBCDSetting("legendaryResistanceColor");
 	}
 
 	get hitPointsEnabled() {
-		return getBSTSetting("hitPointsEnabled");
+		return getBCDSetting("hitPointsEnabled");
 	}
 
 	get hitPointsDamageColor() {
-		return getBSTSetting("hitPointsDamageColor");
+		return getBCDSetting("hitPointsDamageColor");
 	}
 
 	get hitPointsHealingColor() {
-		return getBSTSetting("hitPointsHealingColor");
+		return getBCDSetting("hitPointsHealingColor");
 	}
 }
 
 /**
  * Class instance that can be used to both initialize and retrieve config
  */
-export const BSTSettings = new Settings();
+export const BCDSettings = new Settings();

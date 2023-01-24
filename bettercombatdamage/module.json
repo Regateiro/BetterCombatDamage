@@ -1,5 +1,5 @@
 {
-    "name": "betterscrollingtext",
+    "name": "bettercombatdamage",
     "title": "Better Scrolling Text",
     "description": "This module allows to configure additional fields that can trigger scrolling text over actor tokens.",
     "authors": [
@@ -9,7 +9,7 @@
             "url": "https://github.com/Regateiro"
         }
     ],
-    "url": "https://github.com/Regateiro/BetterScrollingText/tree/master/betterscrollingtext",
+    "url": "https://github.com/Regateiro/bettercombatdamage/tree/master/bettercombatdamage",
     "version": "0.0.2",
     "compatibility": {
         "minimum": "10.291",
@@ -50,6 +50,6 @@
               }
         ]
     },
-    "manifest": "https://raw.githubusercontent.com/Regateiro/BetterScrollingText/master/betterscrollingtext/module.json",
-    "download": "https://github.com/Regateiro/BetterScrollingText/releases/download/v0.0.2/module.zip"
+    "manifest": "https://raw.githubusercontent.com/Regateiro/bettercombatdamage/master/bettercombatdamage/module.json",
+    "download": "https://github.com/Regateiro/bettercombatdamage/releases/download/v0.0.2/module.zip"
 }
