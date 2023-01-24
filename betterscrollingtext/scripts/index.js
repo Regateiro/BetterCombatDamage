@@ -16,7 +16,12 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 			if(!BSTSettings.hitPointsEnabled)
 				return;
 			
-			diff = opts.dhp;
+			if (typeof opts.dhp !== 'undefined') {
+				diff = opts.dhp;
+			} else {
+				diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
+			}
+
 			pct = Math.clamped(Math.abs(diff) / actor.system.attributes.hp.max, 0, 1);
 			color = diff < 0 ? BSTSettings.hitPointsDamageColor : BSTSettings.hitPointsHealingColor;
 
@@ -43,4 +48,6 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 
 Hooks.once("init", () => {
 	BSTSettings.init();
+	// Disable the normal scrolling text
+	libWrapper.register("betterscrollingtext", "CONFIG.Actor.documentClass.prototype._displayScrollingDamage", (_) => {}, "OVERRIDE", {chain: true});
 });
