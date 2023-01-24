@@ -1,0 +1,35 @@
+{
+    "name": "betterscrollingtext",
+    "title": "Better Scrolling Text",
+    "description": "This module allows to configure additional fields that can trigger scrolling text over actor tokens.",
+    "authors": [
+        {
+            "name": "regateiro",
+            "email": "diogo.regateiro@gmail.com",
+            "url": "https://github.com/Regateiro"
+        }
+    ],
+    "url": "https://github.com/Regateiro/BetterScrollingText/tree/master/betterscrollingtext",
+    "version": "0.0.1",
+    "compatibility": {
+        "minimum": "10.291",
+        "verified": "10"
+    },
+    "esmodules": [
+        "./scripts/index.js"
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "dnd5e",
+                "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
+                "compatibility": {
+                    "minimum": "2.0.0",
+                    "verified": "2.1.2"
+                }
+            }
+        ]
+    },
+    "manifest": "https://raw.githubusercontent.com/Regateiro/BetterScrollingText/master/betterscrollingtext/module.json",
+    "download": "https://github.com/Regateiro/BetterScrollingText/releases/download/v0.0.1/module.zip"
+}
