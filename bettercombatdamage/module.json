@@ -9,7 +9,7 @@
             "url": "https://github.com/Regateiro"
         }
     ],
-    "url": "https://github.com/Regateiro/bettercombatdamage/tree/master/bettercombatdamage",
+    "url": "https://github.com/Regateiro/BetterCombatDamage/tree/master/bettercombatdamage",
     "version": "0.0.2",
     "compatibility": {
         "minimum": "10.291",
@@ -50,6 +50,6 @@
               }
         ]
     },
-    "manifest": "https://raw.githubusercontent.com/Regateiro/bettercombatdamage/master/bettercombatdamage/module.json",
-    "download": "https://github.com/Regateiro/bettercombatdamage/releases/download/v0.0.2/module.zip"
+    "manifest": "https://raw.githubusercontent.com/Regateiro/BetterCombatDamage/master/bettercombatdamage/module.json",
+    "download": "https://github.com/Regateiro/BetterCombatDamage/releases/download/v0.0.2/module.zip"
 }
