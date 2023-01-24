@@ -27,17 +27,17 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 				}
 
 				// Check if Fortitude Points are on and whether the HP change would kill the actor
-				let fortitudeDiff = 0, hpDiff = diff;
+				let fortitudeDiff = 0, hpDiff = diff, _ignoreNextActorHPChange = false;
 				if(BCDSettings.fortitudePointsEnabled && actor.system.resources?.legres?.value > 0 && actor.system.attributes.hp.value + diff <= 0) {
 					hpDiff = 1 - actor.system.attributes.hp.value;
 					fortitudeDiff = (diff - hpDiff);
-					ignoreNextActorHPChange[actor._id] = true;
+					_ignoreNextActorHPChange = true;
 
 					// If the difference is such that completely exhausts the fortitude points, add the rest to the hpDiff
 					if (Math.abs(fortitudeDiff) > actor.system.resources.legres.value) {
 						fortitudeDiff = -actor.system.resources.legres.value;
 						hpDiff = diff - fortitudeDiff;
-						ignoreNextActorHPChange[actor._id] = false;
+						_ignoreNextActorHPChange = false;
 					}
 
 					// Update the actor legendary resistance value
@@ -56,6 +56,8 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 						}
 					} else ignoreNextActorHPChange[actor._id] = false;
 				}
+
+				ignoreNextActorHPChange[actor._id] = _ignoreNextActorHPChange;
 				break;
 			case BCD_FIELDS.LEGENDARY_RESISTANCE:
 				// Calculate the legendary resistance difference	
