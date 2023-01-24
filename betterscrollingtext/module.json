@@ -10,7 +10,7 @@
         }
     ],
     "url": "https://github.com/Regateiro/BetterScrollingText/tree/master/betterscrollingtext",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "compatibility": {
         "minimum": "10.291",
         "verified": "10"
