@@ -1,7 +1,7 @@
 {
     "name": "bettercombatdamage",
-    "title": "Better Scrolling Text",
-    "description": "This module allows to configure additional fields that can trigger scrolling text over actor tokens.",
+    "title": "Better Combat Damage",
+    "description": "This module enhances the calculation and display of combat damage and scrolling text.",
     "authors": [
         {
             "name": "regateiro",
