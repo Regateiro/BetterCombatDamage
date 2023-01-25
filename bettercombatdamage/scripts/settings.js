@@ -69,6 +69,22 @@ class Settings {
 			}
 		)
 
+		ColorPicker.register(
+			"bettercombatdamage",
+			"tempHitPointsColor", 
+			{
+			  name: "Temporary Hit Points Text Color",
+			  hint: "Sets the scrolling text color of temporary hit points.",
+			  scope: "client",
+			  config: true,
+			  default: '#00FF00FF'
+			},
+			{
+			  format: "hexa",
+			  alphaChannel: true
+			}
+		)
+
 		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
 			name: "Legendary Resistance",
 			hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
@@ -113,6 +129,10 @@ class Settings {
 
 	get hitPointsHealingColor() {
 		return getBCDSetting("hitPointsHealingColor");
+	}
+
+	get tempHitPointsColor() {
+		return getBCDSetting("tempHitPointsColor");
 	}
 
 	get legendaryResistanceEnabled() {

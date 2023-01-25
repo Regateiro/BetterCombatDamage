@@ -2,6 +2,7 @@
 export const BCD_FIELDS = {
     LEGENDARY_RESISTANCE: "system.resources.legres.value",
     HP: "system.attributes.hp.value",
+    TEMP_HP: "system.attributes.hp.temp",
     NONE: ""
 }
 
@@ -37,6 +38,10 @@ export class ActorUtils {
         if(typeof update.system?.resources?.legres?.value !== 'undefined') {
             fields.push(BCD_FIELDS.LEGENDARY_RESISTANCE);
         } 
+
+        if(typeof update.system?.attributes?.hp?.temp !== 'undefined') {
+            fields.push(BCD_FIELDS.TEMP_HP);
+        }
 
         return fields;
     }

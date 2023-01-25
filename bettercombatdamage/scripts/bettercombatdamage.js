@@ -3,6 +3,20 @@ import { BCDSettings } from "./settings.js"
 
 Hooks.on("updateActor", (actor, update, opts) => {
 	let i = 0;
+
+	if(typeof actor.flags?.bcd?.render?.thp !== 'undefined') {
+		const diff = actor.flags.bcd.render.thp;
+		if (diff !== 0) {
+			if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+				ActorUtils.displayScrollingText(actor, diff, BCDSettings.tempHitPointsColor, 750 * i);
+			}
+			if (actor.flags.bcd.issuer === game.user._id) {
+				ActorUtils.addActorUpdate(actor, "flags.bcd.render.thp", 0);
+			}
+			i++;
+		}
+	}
+
 	if(typeof actor.flags?.bcd?.render?.hp !== 'undefined') {
 		const diff = actor.flags.bcd.render.hp;
 		if (diff !== 0) {
@@ -43,7 +57,7 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 			case BCD_FIELDS.HP:
 				// Calculate the change in HP
 				if (typeof opts.dhp !== 'undefined') {
-					diff = opts.dhp;
+					diff = (opts.dhp + actor.system.attributes.hp.temp);
 				} else {
 					diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
 				}
@@ -83,6 +97,14 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 				ActorUtils.addActorUpdate(actor, "flags.bcd.render.legres", diff);
 				ActorUtils.addActorUpdate(actor, "flags.bcd.issuer", game.user._id);
 				break;
+			case BCD_FIELDS.TEMP_HP:
+					// Calculate the legendary resistance difference	
+					diff = update.system.attributes.hp.temp - actor.system.attributes.hp.temp;
+	
+					// Display the scrolling text
+					ActorUtils.addActorUpdate(actor, "flags.bcd.render.thp", diff);
+					ActorUtils.addActorUpdate(actor, "flags.bcd.issuer", game.user._id);
+					break;
 			default:
 				// Do nothing if a non supported field is updated
 				break;
