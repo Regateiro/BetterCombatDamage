@@ -22,7 +22,7 @@ class Settings {
 		game.settings.register("bettercombatdamage", "scrollTextEnabled", {
 			name: "Enable Damage Scrolling Text",
 			hint: "Enables/Disables the scrolling text.",
-			scope: "world",
+			scope: "client",
 			config: true,
 			default: true,
 			type: Boolean
@@ -31,7 +31,7 @@ class Settings {
 		game.settings.register("bettercombatdamage", "hitPointsEnabled", {
 			name: "Hit Points",
 			hint: "Enables/Disables the display of the scrolling text for hit points.",
-			scope: "world",
+			scope: "client",
 			config: true,
 			default: true,
 			type: Boolean
@@ -72,7 +72,7 @@ class Settings {
 		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
 			name: "Legendary Resistance",
 			hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
-			scope: "world",
+			scope: "client",
 			config: true,
 			default: true,
 			type: Boolean
