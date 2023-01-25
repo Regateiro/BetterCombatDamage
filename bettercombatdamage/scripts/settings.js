@@ -77,7 +77,7 @@ class Settings {
 			  hint: "Sets the scrolling text color of temporary hit points.",
 			  scope: "client",
 			  config: true,
-			  default: '#00FF00FF'
+			  default: '#00FFFFFF'
 			},
 			{
 			  format: "hexa",
