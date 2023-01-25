@@ -21,7 +21,7 @@ class Settings {
 
 		game.settings.register("bettercombatdamage", "scrollTextEnabled", {
 			name: "Enable Damage Scrolling Text",
-			hint: "Enables/Disables the module without having to restart Foundry.",
+			hint: "Enables/Disables the scrolling text.",
 			scope: "world",
 			config: true,
 			default: true,
