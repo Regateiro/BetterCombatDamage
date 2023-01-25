@@ -2,6 +2,34 @@ import { BCD_FIELDS, ActorUtils } from "./utils.js";
 import { BCDSettings } from "./settings.js"
 
 Hooks.on("updateActor", (actor, update, opts) => {
+	let i = 0;
+	if(typeof actor.flags?.bcd?.render?.hp !== 'undefined') {
+		const diff = actor.flags.bcd.render.hp;
+		if (diff !== 0) {
+			if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+				const color = diff <= 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
+				ActorUtils.displayScrollingText(actor, diff, color, 750 * i);
+			}
+			if (actor.flags.bcd.issuer === game.user._id) {
+				ActorUtils.addActorUpdate(actor, "flags.bcd.render.hp", 0);
+			}
+			i++;
+		}
+	}
+
+	if(typeof actor.flags?.bcd?.render?.legres !== 'undefined') {
+		const diff = actor.flags.bcd.render.legres;
+		if (diff !== 0) {
+			if (BCDSettings.scrollTextEnabled && BCDSettings.legendaryResistanceEnabled) {
+				ActorUtils.displayScrollingText(actor, diff, BCDSettings.legendaryResistanceColor, 750 * i);
+			}
+			if (actor.flags.bcd.issuer === game.user._id) {
+				ActorUtils.addActorUpdate(actor, "flags.bcd.render.legres", 0);
+			}
+			i++;
+		}
+	}
+
 	ActorUtils.updateActor(actor);
 });
 
@@ -10,7 +38,7 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 	// If a supported value was updated, process the change
 	const updatedFields = ActorUtils.getUpdatedField(update);
 	for (let field of updatedFields) {
-		let diff = null, color = null;
+		let diff = null;
 		switch(field) {
 			case BCD_FIELDS.HP:
 				// Calculate the change in HP
@@ -35,33 +63,29 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 					// Update the actor legendary resistance value
 					ActorUtils.addActorUpdate(actor, BCD_FIELDS.LEGENDARY_RESISTANCE, Math.max(actor.system.resources.legres.value + fortitudeDiff, 0));
 					ActorUtils.addActorUpdate(actor, BCD_FIELDS.HP, Math.max(actor.system.attributes.hp.value + hpDiff, 0));
-					if(BCDSettings.scrollTextEnabled && BCDSettings.legendaryResistanceEnabled) {
-						ActorUtils.addScrollingText(actor, fortitudeDiff, BCDSettings.legendaryResistanceColor);
-					}
+					ActorUtils.addActorUpdate(actor, "flags.bcd.render.legres", fortitudeDiff);
+					ActorUtils.addActorUpdate(actor, "flags.bcd.render.hp", Math.min(hpDiff, 0));
+					ActorUtils.addActorUpdate(actor, "flags.bcd.issuer", game.user._id);
+					break;
 				}
 
 				// Display the hit points scrolling text
-				if(BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
-					color = hpDiff <= 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
-					ActorUtils.addScrollingText(actor, hpDiff, color);
+				if (hpDiff !== 1 || actor.system.attributes.hp.value > 0 || typeof update.system?.resources?.legres?.value === 'undefined') {
+					ActorUtils.addActorUpdate(actor, "flags.bcd.render.hp", hpDiff);
+					ActorUtils.addActorUpdate(actor, "flags.bcd.issuer", game.user._id);
 				}
-
-				ActorUtils.renderScrollingText(actor);
 				break;
 			case BCD_FIELDS.LEGENDARY_RESISTANCE:
 				// Calculate the legendary resistance difference	
 				diff = update.system.resources.legres.value - actor.system.resources.legres.value;
 
 				// Display the scrolling text
-				if(BCDSettings.scrollTextEnabled && BCDSettings.legendaryResistanceEnabled) {
-					ActorUtils.addScrollingText(actor, diff, BCDSettings.legendaryResistanceColor);
-				}
-
-				ActorUtils.renderScrollingText(actor);
+				ActorUtils.addActorUpdate(actor, "flags.bcd.render.legres", diff);
+				ActorUtils.addActorUpdate(actor, "flags.bcd.issuer", game.user._id);
 				break;
 			default:
 				// Do nothing if a non supported field is updated
-				return;
+				break;
 		}
 	}
 });
