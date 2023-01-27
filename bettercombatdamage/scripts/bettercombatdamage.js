@@ -51,21 +51,21 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 
 	// If a supported value was updated, process the change
 	const updatedFields = ActorUtils.getUpdatedField(update);
-	let hpDiff = null, thpDiff = null, legresDiff = null;
+	let diff = null;
 	for (let field of updatedFields) {
 		switch(field) {
 			case BCD_FIELDS.HP:
 				// Calculate the change in HP
 				if (typeof opts.dhp !== 'undefined') {
-					hpDiff = (opts.dhp + actor.system.attributes.hp.temp);
+					diff = (opts.dhp + actor.system.attributes.hp.temp);
 				} else {
-					hpDiff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
+					diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
 				}
 
 				// Check if Fortitude Points are on and whether the HP change would kill the actor
 				if(BCDSettings.fortitudePointsEnabled && actor.system.resources?.legres?.value > 0 && actor.system.attributes.hp.value + diff <= 0) {
-					hpDiff = 1 - actor.system.attributes.hp.value;
-					legresDiff = (diff - hpDiff);
+					let hpDiff = 1 - actor.system.attributes.hp.value;
+					let legresDiff = (diff - hpDiff);
 
 					// If the difference is such that completely exhausts the fortitude points, add the rest to the hpDiff
 					if (Math.abs(legresDiff) > actor.system.resources.legres.value) {
@@ -82,22 +82,22 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 					ActorUtils.addActorUpdate(actor, "flags.bcd.hp.diff", updateID.concat(".", hpDiff));
 				} else {
 					// If the HP difference would not kill the actor, simply add the HP difference to be rendered
-					ActorUtils.addActorUpdate(actor, "flags.bcd.hp.diff", updateID.concat(".", hpDiff));
+					ActorUtils.addActorUpdate(actor, "flags.bcd.hp.diff", updateID.concat(".", diff));
 				}
 				break;
 			case BCD_FIELDS.TEMP_HP:
 				// Calculate the temporary HP difference	
-				thpDiff = update.system.attributes.hp.temp - actor.system.attributes.hp.temp;
+				diff = update.system.attributes.hp.temp - actor.system.attributes.hp.temp;
 
 				// Add the difference to be rendered
-				ActorUtils.addActorUpdate(actor, "flags.bcd.thp.diff", updateID.concat(".", thpDiff));
+				ActorUtils.addActorUpdate(actor, "flags.bcd.thp.diff", updateID.concat(".", diff));
 				break;
 			case BCD_FIELDS.LEGENDARY_RESISTANCE:
 				// Calculate the legendary resistance difference	
-				legresDiff = update.system.resources.legres.value - actor.system.resources.legres.value;
+				diff = update.system.resources.legres.value - actor.system.resources.legres.value;
 
 				// Add the difference to be rendered
-				ActorUtils.addActorUpdate(actor, "flags.bcd.legres.diff", updateID.concat(".", legresDiff));
+				ActorUtils.addActorUpdate(actor, "flags.bcd.legres.diff", updateID.concat(".", diff));
 				break;
 			default:
 				// Do nothing if a non supported field is updated
