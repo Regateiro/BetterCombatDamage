@@ -2,6 +2,9 @@ import { BCD_FIELDS, ActorUtils, random } from "./utils.js";
 import { BCDSettings } from "./settings.js"
 
 Hooks.on("updateActor", (actor, update, _) => {
+	// Issue an actor update with any changes and differences to be rendered
+	ActorUtils.updateActor(actor);
+
 	// Render scrolling texts for all BCD updates
 	let i = 0;
 
@@ -105,8 +108,6 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 		}
 	}
 
-	// Issue an actor update with the changes and differences to be rendered
-	ActorUtils.updateActor(actor);
 	return true;
 });
 
