@@ -9,7 +9,6 @@ class Settings {
 	 * This should only be called once, at initialization.
 	 */
 	init() {
-		
 		game.settings.register("bettercombatdamage", "fortitudePointsEnabled", {
 			name: "Enable Fortitute Points",
 			hint: "Use Legendary Resistance as Fortitude Points (Ishiir).",
@@ -51,7 +50,7 @@ class Settings {
 			  format: "hexa",
 			  alphaChannel: true
 			}
-		)
+		);
 		
 		ColorPicker.register(
 			"bettercombatdamage",
@@ -67,7 +66,7 @@ class Settings {
 			  format: "hexa",
 			  alphaChannel: true
 			}
-		)
+		);
 
 		ColorPicker.register(
 			"bettercombatdamage",
@@ -83,7 +82,7 @@ class Settings {
 			  format: "hexa",
 			  alphaChannel: true
 			}
-		)
+		);
 
 		game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
 			name: "Legendary Resistance",
@@ -108,41 +107,41 @@ class Settings {
 			  format: "hexa",
 			  alphaChannel: true
 			}
-		)
-	}
+		);
+	};
 
 	get fortitudePointsEnabled() {
 		return getBCDSetting("fortitudePointsEnabled");
-	}
+	};
 
 	get scrollTextEnabled() {
 		return getBCDSetting("scrollTextEnabled");
-	}
+	};
 
 	get hitPointsEnabled() {
 		return getBCDSetting("hitPointsEnabled");
-	}
+	};
 
 	get hitPointsDamageColor() {
 		return getBCDSetting("hitPointsDamageColor");
-	}
+	};
 
 	get hitPointsHealingColor() {
 		return getBCDSetting("hitPointsHealingColor");
-	}
+	};
 
 	get tempHitPointsColor() {
 		return getBCDSetting("tempHitPointsColor");
-	}
+	};
 
 	get legendaryResistanceEnabled() {
 		return getBCDSetting("legendaryResistanceEnabled");
-	}
+	};
 
 	get legendaryResistanceColor() {
 		return getBCDSetting("legendaryResistanceColor");
-	}
-}
+	};
+};
 
 /**
  * Class instance that can be used to both initialize and retrieve config

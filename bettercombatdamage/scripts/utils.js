@@ -4,7 +4,20 @@ export const BCD_FIELDS = {
     HP: "system.attributes.hp.value",
     TEMP_HP: "system.attributes.hp.temp",
     NONE: ""
-}
+};
+
+export const random = (length = 16) => {
+    // Declare all characters
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    // Pick characers randomly
+    let str = '';
+    for (let i = 0; i < length; i++) {
+        str += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return str;
+};
 
 export class ActorUtils {
 	static ACTOR_UPDATES = {};
@@ -61,4 +74,4 @@ export class ActorUtils {
             }), delay);
         }
     }
-}
+};
