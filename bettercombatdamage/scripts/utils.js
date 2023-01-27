@@ -2,8 +2,7 @@
 export const BCD_FIELDS = {
     LEGENDARY_RESISTANCE: "system.resources.legres.value",
     HP: "system.attributes.hp.value",
-    TEMP_HP: "system.attributes.hp.temp",
-    NONE: ""
+    TEMP_HP: "system.attributes.hp.temp"
 };
 
 // Random string generator function
