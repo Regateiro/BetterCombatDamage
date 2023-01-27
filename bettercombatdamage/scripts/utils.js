@@ -20,25 +20,25 @@ export const random = (length = 16) => {
 };
 
 export class ActorUtils {
-	static ACTOR_UPDATES = {};
+    static ACTOR_UPDATES = {};
 
-	static addActorUpdate(actor, key, value) {
-		if (typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined') {
-			ActorUtils.ACTOR_UPDATES[actor._id] = {};
-		}
+    static addActorUpdate(actor, key, value) {
+        if (typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined') {
+            ActorUtils.ACTOR_UPDATES[actor._id] = {};
+        }
 
         ActorUtils.ACTOR_UPDATES[actor._id][key] = value;
-	}
+    };
 
-	static updateActor(actor) {        
-		// Update only if there is something to update
-		if(typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined' || Object.keys(ActorUtils.ACTOR_UPDATES[actor._id]).length === 0) {
-			return;
-		}
+    static updateActor(actor) {
+        // Update only if there is something to update
+        if(typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined' || Object.keys(ActorUtils.ACTOR_UPDATES[actor._id]).length === 0) {
+            return;
+        }
 
-		actor.update(ActorUtils.ACTOR_UPDATES[actor._id])
-		ActorUtils.ACTOR_UPDATES[actor._id] = {};
-	}
+        actor.update(ActorUtils.ACTOR_UPDATES[actor._id])
+        ActorUtils.ACTOR_UPDATES[actor._id] = {};
+    };
 
     // Determines the updated field
     static getUpdatedField(update) {
@@ -50,14 +50,14 @@ export class ActorUtils {
 
         if(typeof update.system?.resources?.legres?.value !== 'undefined') {
             fields.push(BCD_FIELDS.LEGENDARY_RESISTANCE);
-        } 
+        }
 
         if(typeof update.system?.attributes?.hp?.temp !== 'undefined') {
             fields.push(BCD_FIELDS.TEMP_HP);
         }
 
         return fields;
-    }
+    };
 
     // Returns whether an item makes an attack roll
     static displayScrollingText(actor, diff, color, delay) {
@@ -73,5 +73,5 @@ export class ActorUtils {
                 jitter: 0.25
             }), delay);
         }
-    }
+    };
 };
