@@ -6,6 +6,7 @@ export const BCD_FIELDS = {
     NONE: ""
 };
 
+// Random string generator function
 export const random = (length = 16) => {
     // Declare all characters
     let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -19,9 +20,12 @@ export const random = (length = 16) => {
     return str;
 };
 
+// Utility class for Actor actions
 export class ActorUtils {
+    // Variable to store actor updates
     static ACTOR_UPDATES = {};
 
+    // Add an update to be issued later
     static addActorUpdate(actor, key, value) {
         if (typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined') {
             ActorUtils.ACTOR_UPDATES[actor._id] = {};
@@ -30,13 +34,17 @@ export class ActorUtils {
         ActorUtils.ACTOR_UPDATES[actor._id][key] = value;
     };
 
+    // Issue all updates added since last update
     static updateActor(actor) {
         // Update only if there is something to update
         if(typeof ActorUtils.ACTOR_UPDATES[actor._id] === 'undefined' || Object.keys(ActorUtils.ACTOR_UPDATES[actor._id]).length === 0) {
             return;
         }
 
-        actor.update(ActorUtils.ACTOR_UPDATES[actor._id])
+        // Update the actor using the stored updates
+        actor.update(ActorUtils.ACTOR_UPDATES[actor._id]);
+
+        // Clear the actor updates variable
         ActorUtils.ACTOR_UPDATES[actor._id] = {};
     };
 
@@ -61,9 +69,13 @@ export class ActorUtils {
 
     // Returns whether an item makes an attack roll
     static displayScrollingText(actor, diff, color, delay) {
+        // If the actor doesn't exist or the difference is 0, don't render
         if ( !actor || diff === 0 ) return;
+
+        // Get the active tokens to render on top of
         const tokens = actor.getActiveTokens(true);
         for ( const t of tokens ) {
+            // Render the difference on top of the active tokens after a set delay
             setTimeout(() => canvas.interface.createScrollingText(t.center, diff.signedString(), {
                 anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
                 fontSize: 48, // Range between [16, 48]

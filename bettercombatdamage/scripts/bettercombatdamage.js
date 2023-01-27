@@ -1,6 +1,7 @@
 import { BCD_FIELDS, ActorUtils, random } from "./utils.js";
 import { BCDSettings } from "./settings.js"
 
+// Attach to actor updates to render processed changes and issue new updates
 Hooks.on("updateActor", (actor, update, _) => {
     // Issue an actor update with any changes and differences to be rendered
     ActorUtils.updateActor(actor);
@@ -45,7 +46,7 @@ Hooks.on("updateActor", (actor, update, _) => {
     return true;
 });
 
-// Attach to actor updates
+// Attach to preActor updates so (T)HP and LegRes changes can be processed
 Hooks.on("preUpdateActor", (actor, update, opts) => {
     // Check if this update has already been processed
     if(typeof update.flags?.bcd !== 'undefined') {
@@ -114,6 +115,7 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
     return true;
 });
 
+// One time registration steps for settings and core function overrides.
 Hooks.once("init", () => {
     // Init the settings
     BCDSettings.init();
