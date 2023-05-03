@@ -98,6 +98,11 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
 
                 // Add the difference to be rendered
                 ActorUtils.addActorUpdate(actor, "flags.bcd.thp.diff", updateID.concat(".", diff));
+
+                // If the new amount of tempHP is smaller than the current amount of armor mastery temp HP, update it
+                if (Number(update.system.attributes.hp.temp) < Number(actor.flags.mae.tempArmorMastery || 0)) {
+                    ActorUtils.addActorUpdate(actor, "flags.mae.tempArmorMastery", Number(update.system.attributes.hp.temp));
+                }
                 break;
             case BCD_FIELDS.LEGENDARY_RESISTANCE:
                 // Calculate the legendary resistance difference
