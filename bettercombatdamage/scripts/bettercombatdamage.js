@@ -64,7 +64,8 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
             case BCD_FIELDS.HP:
                 // Calculate the change in HP
                 if (typeof opts.dhp !== 'undefined') {
-                    diff = (opts.dhp + actor.system.attributes.hp.temp);
+                    if (opts.dhp >= 0) diff = opts.dhp;
+                    else diff = (opts.dhp + actor.system.attributes.hp.temp);
                 } else {
                     diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
                 }
