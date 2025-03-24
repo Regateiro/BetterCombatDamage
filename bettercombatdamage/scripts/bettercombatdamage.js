@@ -70,9 +70,14 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
                     diff = update.system.attributes.hp.value - actor.system.attributes.hp.value;
                 }
 
-                // Check if Fortitude Points are on and whether the HP change would kill the actor
-                if(BCDSettings.fortitudePointsEnabled && actor.system.resources?.legres?.value > 0 && actor.system.attributes.hp.value + diff <= 0) {
-                    let hpDiff = 1 - actor.system.attributes.hp.value;
+                // Check if Fortitude Points are on and whether the HP change would go through the threshold
+                const THRESHOLD = Math.floor((actor.system.attributes.hp.max * BCDSettings.triggerAtPercentage) / 100);
+                if(BCDSettings.fortitudePointsEnabled && actor.system.resources?.legres?.value > 0 && actor.system.attributes.hp.value + diff <= THRESHOLD) {
+                    // Calculate the difference to reach the threshold
+                    let hpDiff = THRESHOLD - actor.system.attributes.hp.value;
+                    // If the threshold is 0, add 1 so the creature isn't considered dead
+                    if (THRESHOLD == 0) hpDiff += 1;
+                    // Remove the rest of the damage from the legendary resistance
                     let legresDiff = (diff - hpDiff);
 
                     // If the difference is such that completely exhausts the fortitude points, add the rest to the hpDiff
@@ -89,7 +94,7 @@ Hooks.on("preUpdateActor", (actor, update, opts) => {
                     ActorUtils.addActorUpdate(actor, "flags.bcd.legres.diff", updateID.concat(".", legresDiff));
                     ActorUtils.addActorUpdate(actor, "flags.bcd.hp.diff", updateID.concat(".", hpDiff));
                 } else {
-                    // If the HP difference would not kill the actor, simply add the HP difference to be rendered
+                    // If the HP difference would not go below the trigger threshold, simply add the HP difference to be rendered
                     ActorUtils.addActorUpdate(actor, "flags.bcd.hp.diff", updateID.concat(".", diff));
                 }
                 break;
