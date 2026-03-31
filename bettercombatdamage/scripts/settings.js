@@ -9,29 +9,6 @@ class Settings {
      * This should only be called once, at initialization.
      */
     init() {
-        game.settings.register("bettercombatdamage", "fortitudePointsEnabled", {
-            name: "Enable Fortitute Points",
-            hint: "Use Legendary Resistance as Fortitude Points (Ishiir).",
-            scope: "world",
-            config: true,
-            default: true,
-            type: Boolean
-        });
-
-        game.settings.register("bettercombatdamage", "triggerAtPercentage", {
-            name: "Fortitude Points HP Percentage Trigger",
-            hint: "Use Fortitude Points instead of HP at the given HP percentage.",
-            scope: "world",
-            config: true,
-            default: 0,
-            type: Number,
-            range: {
-                min: 0,
-                step: 1,
-                max: 100
-            }
-        });
-
         game.settings.register("bettercombatdamage", "scrollTextEnabled", {
             name: "Enable Damage Scrolling Text",
             hint: "Enables/Disables the scrolling text.",
