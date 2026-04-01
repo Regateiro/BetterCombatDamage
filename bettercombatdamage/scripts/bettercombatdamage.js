@@ -39,21 +39,4 @@ Hooks.once("init", () => {
 
     // Disable the normal scrolling text
     libWrapper.register("bettercombatdamage", "CONFIG.Actor.documentClass.prototype._displayScrollingDamage", (_) => {}, "OVERRIDE", {chain: true});
-
-    // Register Extra Character Flags
-	CONFIG.DND5E.characterFlags["bladeMastery"] = {
-		name: "Blade Mastery",
-		hint: "Roll an extra d20 with advantage when using relevant weapons.",
-		section: "Feats",
-		type: Boolean
-	};
-    
-	CONFIG.DND5E.characterFlags["greaterRage"] = {
-		name: "Greater Rage",
-		hint: "Roll an extra d20 with advantage on reckless attacks when raging.",
-		section: "Feats",
-		type: Boolean
-	};
-
-    libWrapper.register("bettercombatdamage", "CONFIG.Item.documentClass.prototype.rollAttack", _rollAttack, "WRAPPER");
 });
