@@ -5,27 +5,27 @@ import { BCDSettings } from "./settings.js"
 Hooks.on("updateActor", (actor, _, opts) => {
     // Render scrolling texts for all BCD updates
     let backoff = 0;
-    console.log(opts)
+    if (!opts.dparts) return true; // If there are no damage parts, don't render
 
     // If there is a change in temporary HP, display that first
-    if (opts.delta_thp !== 0) {
+    if (opts.dparts.thp !== 0) {
         if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
-            ActorUtils.displayScrollingText(actor, opts.delta_thp ?? 0, BCDSettings.tempHitPointsColor, 750 * backoff++);
+            ActorUtils.displayScrollingText(actor, opts.dparts.thp ?? 0, BCDSettings.tempHitPointsColor, 750 * backoff++);
         }
     }
 
     // If there is a change in HP, display that next
-    if (opts.delta_hp !== 0) {
+    if (opts.dparts.hp !== 0) {
         if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
-            const color = opts.delta_hp <= 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
-            ActorUtils.displayScrollingText(actor, opts.delta_hp ?? 0, color, 750 * backoff++);
+            const color = opts.dparts.hp <= 0 ? BCDSettings.hitPointsDamageColor : BCDSettings.hitPointsHealingColor;
+            ActorUtils.displayScrollingText(actor, opts.dparts.hp ?? 0, color, 750 * backoff++);
         }
     }
 
     // If there is a change in legendary resistance, display that last
-    if (opts.delta_fp !== 0) {
+    if (opts.dparts.fp !== 0) {
         if (BCDSettings.scrollTextEnabled && BCDSettings.legendaryResistanceEnabled) {
-            ActorUtils.displayScrollingText(actor, opts.delta_fp ?? 0, BCDSettings.legendaryResistanceColor, 750 * backoff++);
+            ActorUtils.displayScrollingText(actor, opts.dparts.fp ?? 0, BCDSettings.legendaryResistanceColor, 750 * backoff++);
         }
     }
 
