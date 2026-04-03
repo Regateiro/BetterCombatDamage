@@ -1,4 +1,4 @@
-import { ActorUtils, _rollAttack } from "./utils.js";
+import { ActorUtils } from "./utils.js";
 import { BCDSettings } from "./settings.js"
 
 // Attach to actor updates to render processed changes and issue new updates
