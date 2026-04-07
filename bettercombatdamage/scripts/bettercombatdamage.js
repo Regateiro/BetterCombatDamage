@@ -7,6 +7,13 @@ Hooks.on("updateActor", (actor, _, opts) => {
     let backoff = 0;
     if (!opts.deltas) return true; // If there are no damage parts, don't render
 
+    // If there is a change in armor mastery points, display that first
+    if (opts.deltas.ahp !== 0) {
+        if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+            ActorUtils.displayScrollingText(actor, opts.deltas.ahp ?? 0, BCDSettings.armorMasteryPointsColor, 750 * backoff++);
+        }
+    }
+
     // If there is a change in temporary HP, display that first
     if (opts.deltas.thp !== 0) {
         if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {

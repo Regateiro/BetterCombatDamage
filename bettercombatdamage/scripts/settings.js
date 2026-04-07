@@ -75,6 +75,22 @@ class Settings {
             }
         );
 
+        ColorPicker.register(
+            "bettercombatdamage",
+            "armorMasteryPointsColor",
+            {
+              name: "Armor Mastery Points Text Color",
+              hint: "Sets the scrolling text color of armor mastery points.",
+              scope: "client",
+              config: true,
+              default: '#888888FF'
+            },
+            {
+              format: "hexa",
+              alphaChannel: true
+            }
+        );
+
         game.settings.register("bettercombatdamage", "legendaryResistanceEnabled", {
             name: "Legendary Resistance",
             hint: "Enables/Disables the display of the scrolling text for the legendary resistance.",
