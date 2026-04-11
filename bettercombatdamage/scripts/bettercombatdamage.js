@@ -5,7 +5,9 @@ import { BCDSettings } from "./settings.js"
 Hooks.on("updateActor", (actor, _, opts) => {
     // Render scrolling texts for all BCD updates
     let backoff = 0;
-    if (!opts.deltas) return true; // If there are no damage parts, don't render
+    if (!opts.deltas) {
+        return true;
+    }
 
     // If there is a change in armor mastery points, display that first
     if (opts.deltas.ahp !== 0) {
@@ -45,5 +47,5 @@ Hooks.once("init", () => {
     BCDSettings.init();
 
     // Disable the normal scrolling text
-    libWrapper.register("bettercombatdamage", "CONFIG.Actor.documentClass.prototype._displayScrollingDamage", (_) => {}, "OVERRIDE", {chain: true});
+    libWrapper.register("bettercombatdamage", "CONFIG.Actor.documentClass.prototype._displayScrollingDamage", () => {}, "OVERRIDE", {chain: true});
 });

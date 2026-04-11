@@ -3,7 +3,9 @@ export class ActorUtils {
     // Returns whether an item makes an attack roll
     static displayScrollingText(actor, diff, color, delay) {
         // If the actor doesn't exist or the difference is 0, don't render
-        if ( !actor || diff === 0 ) return;
+        if (!actor || diff === 0) {
+            return;
+        }
 
         // Get the active tokens to render on top of
         const tokens = actor.getActiveTokens(true);

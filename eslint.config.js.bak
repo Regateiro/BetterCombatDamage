@@ -1,0 +1,23 @@
+import js from '@eslint/js';
+
+export default [
+    js.configs.recommended,
+    {
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
+            globals: {
+                Hooks: 'readonly',
+                libWrapper: 'readonly',
+                game: 'readonly',
+                ColorPicker: 'readonly',
+                setTimeout: 'readonly',
+                canvas: 'readonly',
+                CONST: 'readonly'
+            }
+        },
+        rules: {
+            'no-unused-vars': 'error'
+        }
+    }
+];

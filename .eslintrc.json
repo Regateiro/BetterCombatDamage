@@ -1,0 +1,25 @@
+{
+    "env": {
+        "es2022": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+    },
+    "globals": {
+        "Hooks": "readonly",
+        "libWrapper": "readonly",
+        "game": "readonly",
+        "ColorPicker": "readonly",
+        "setTimeout": "readonly",
+        "canvas": "readonly",
+        "CONST": "readonly"
+    },
+    "rules": {
+        "no-unused-vars": "error",
+        "no-undef": "error",
+        "eqeqeq": ["error", "always"],
+        "curly": ["error", "all"],
+        "no-empty": "warn"
+    }
+}

@@ -117,14 +117,6 @@ class Settings {
         );
     };
 
-    get fortitudePointsEnabled() {
-        return getBCDSetting("fortitudePointsEnabled");
-    };
-
-    get triggerAtPercentage() {
-        return getBCDSetting("triggerAtPercentage");
-    };
-
     get scrollTextEnabled() {
         return getBCDSetting("scrollTextEnabled");
     };
@@ -143,6 +135,10 @@ class Settings {
 
     get tempHitPointsColor() {
         return getBCDSetting("tempHitPointsColor");
+    };
+
+    get armorMasteryPointsColor() {
+        return getBCDSetting("armorMasteryPointsColor");
     };
 
     get legendaryResistanceEnabled() {
