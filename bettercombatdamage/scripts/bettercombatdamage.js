@@ -55,28 +55,29 @@ function hasDataKey(data, path) {
 
 // Helper: compute delta from pre-update values captured in preUpdateActor.
 function computeDeltas(actor, data) {
+	const newVal = getDataValue(data, "system.attributes.hp.value");
+	const newAhp = getDataValue(data, "system.attributes.hp.armor");
+	const newThp = getDataValue(data, "system.attributes.hp.temp");
+	const newFp = getDataValue(data, "system.resources.legres.value");
+
 	const stored = _preUpdateValues.get(actor.id);
 	if (stored)
 		return {
 			hp:
-				Number.isFinite(getDataValue(data, "system.attributes.hp.value")) &&
-				Number.isFinite(stored.hp)
-					? getDataValue(data, "system.attributes.hp.value") - stored.hp
+				Number.isFinite(newVal) && Number.isFinite(stored.hp)
+					? newVal - stored.hp
 					: undefined,
 			ahp:
-				Number.isFinite(getDataValue(data, "system.attributes.hp.armor")) &&
-				Number.isFinite(stored.ahp)
-					? getDataValue(data, "system.attributes.hp.armor") - stored.ahp
+				Number.isFinite(newAhp) && Number.isFinite(stored.ahp)
+					? newAhp - stored.ahp
 					: undefined,
 			thp:
-				Number.isFinite(getDataValue(data, "system.attributes.hp.temp")) &&
-				Number.isFinite(stored.thp)
-					? getDataValue(data, "system.attributes.hp.temp") - stored.thp
+				Number.isFinite(newThp) && Number.isFinite(stored.thp)
+					? newThp - stored.thp
 					: undefined,
 			fp:
-				Number.isFinite(getDataValue(data, "system.resources.legres.value")) &&
-				Number.isFinite(stored.fp)
-					? getDataValue(data, "system.resources.legres.value") - stored.fp
+				Number.isFinite(newFp) && Number.isFinite(stored.fp)
+					? newFp - stored.fp
 					: undefined,
 		};
 
@@ -86,24 +87,20 @@ function computeDeltas(actor, data) {
 
 	return {
 		hp:
-			Number.isFinite(getDataValue(data, "system.attributes.hp.value")) &&
-			Number.isFinite(src.hp)
-				? getDataValue(data, "system.attributes.hp.value") - src.hp
+			Number.isFinite(newVal) && Number.isFinite(src.hp)
+				? newVal - src.hp
 				: undefined,
 		ahp:
-			Number.isFinite(getDataValue(data, "system.attributes.hp.armor")) &&
-			Number.isFinite(src.ahp)
-				? getDataValue(data, "system.attributes.hp.armor") - src.ahp
+			Number.isFinite(newAhp) && Number.isFinite(src.ahp)
+				? newAhp - src.ahp
 				: undefined,
 		thp:
-			Number.isFinite(getDataValue(data, "system.attributes.hp.temp")) &&
-			Number.isFinite(src.thp)
-				? getDataValue(data, "system.attributes.hp.temp") - src.thp
+			Number.isFinite(newThp) && Number.isFinite(src.thp)
+				? newThp - src.thp
 				: undefined,
 		fp:
-			Number.isFinite(getDataValue(data, "system.resources.legres.value")) &&
-			Number.isFinite(src.fp)
-				? getDataValue(data, "system.resources.legres.value") - src.fp
+			Number.isFinite(newFp) && Number.isFinite(src.fp)
+				? newFp - src.fp
 				: undefined,
 	};
 }
