@@ -8,22 +8,24 @@ const _preUpdateValues = new Map();
 // Capture old HP/AHP/THP/Fp values BEFORE any updates are applied.
 // Fires only for the client initiating the update (before system data is mutated).
 Hooks.on("preUpdateActor", (actor, data) => {
-	if (!data || !actor?.id) return;
+	if (!data || !actor?.id || !game.combat?.isActive) {
+		return;
+	}
 
 	const hp = actor.system.attributes.hp ?? {};
 	const fp = actor.system.resources?.legres ?? {};
 
 	_preUpdateValues.set(actor.id, {
-		hp: hasDataKey(data, "system.attributes.hp.value")
+		hp: getDataValue(data, "system.attributes.hp.value") !== undefined
 			? hp.value || 0
 			: undefined,
-		ahp: hasDataKey(data, "system.attributes.hp.armor")
+		ahp: getDataValue(data, "system.attributes.hp.armor") !== undefined
 			? hp.armor || 0
 			: undefined,
-		thp: hasDataKey(data, "system.attributes.hp.temp")
+		thp: getDataValue(data, "system.attributes.hp.temp") !== undefined
 			? hp.temp || 0
 			: undefined,
-		fp: hasDataKey(data, "system.resources.legres.value")
+		fp: getDataValue(data, "system.resources.legres.value") !== undefined
 			? (fp?.value ?? 0)
 			: undefined,
 	});
@@ -31,26 +33,19 @@ Hooks.on("preUpdateActor", (actor, data) => {
 
 // Helper: get a value from nested or flat dot-notation keys.
 function getDataValue(data, path) {
-	if (data[path] != null) return data[path]; // flat key
+	if (data[path] !== undefined && data[path] !== null) {
+		return data[path];
+	}
+
 	const parts = path.split(".");
 	let current = data;
 	for (const part of parts) {
-		if (current == null || typeof current !== "object") return undefined;
+		if (current === undefined || current === null || typeof current !== "object") {
+			return undefined;
+		}
 		current = current[part];
 	}
 	return current;
-}
-
-// Helper: check if a path exists in nested or flat dot-notation keys.
-function hasDataKey(data, path) {
-	if (path in data) return true; // flat key
-	const parts = path.split(".");
-	let current = data;
-	for (const part of parts) {
-		if (current == null || typeof current !== "object") return false;
-		current = current[part];
-	}
-	return true;
 }
 
 // Helper: compute delta from pre-update values captured in preUpdateActor.
@@ -61,61 +56,28 @@ function computeDeltas(actor, data) {
 	const newFp = getDataValue(data, "system.resources.legres.value");
 
 	const stored = _preUpdateValues.get(actor.id);
-	if (stored)
-		return {
-			hp:
-				Number.isFinite(newVal) && Number.isFinite(stored.hp)
-					? newVal - stored.hp
-					: undefined,
-			ahp:
-				Number.isFinite(newAhp) && Number.isFinite(stored.ahp)
-					? newAhp - stored.ahp
-					: undefined,
-			thp:
-				Number.isFinite(newThp) && Number.isFinite(stored.thp)
-					? newThp - stored.thp
-					: undefined,
-			fp:
-				Number.isFinite(newFp) && Number.isFinite(stored.fp)
-					? newFp - stored.fp
-					: undefined,
-		};
-
-	// Fallback for non-initiating clients: use system._source (D&D 5e DataModel's _source)
-	const src = getSourceValues(actor);
-	if (!src) return null;
+	_preUpdateValues.delete(actor.id);
+	if (!stored) {
+		return null;
+	}
 
 	return {
 		hp:
-			Number.isFinite(newVal) && Number.isFinite(src.hp)
-				? newVal - src.hp
+			Number.isFinite(newVal) && Number.isFinite(stored.hp)
+				? newVal - stored.hp
 				: undefined,
 		ahp:
-			Number.isFinite(newAhp) && Number.isFinite(src.ahp)
-				? newAhp - src.ahp
+			Number.isFinite(newAhp) && Number.isFinite(stored.ahp)
+				? newAhp - stored.ahp
 				: undefined,
 		thp:
-			Number.isFinite(newThp) && Number.isFinite(src.thp)
-				? newThp - src.thp
+			Number.isFinite(newThp) && Number.isFinite(stored.thp)
+				? newThp - stored.thp
 				: undefined,
 		fp:
-			Number.isFinite(newFp) && Number.isFinite(src.fp)
-				? newFp - src.fp
+			Number.isFinite(newFp) && Number.isFinite(stored.fp)
+				? newFp - stored.fp
 				: undefined,
-	};
-}
-
-// Helper: get pre-update HP values from the system DataModel's _source.
-// D&D 5e stores pre-update source on actor.system._source (not actor._source).
-function getSourceValues(actor) {
-	const src = actor?.system?._source;
-	if (!src) return null;
-
-	return {
-		ahp: src.attributes?.hp?.armor,
-		thp: src.attributes?.hp?.temp,
-		hp: src.attributes?.hp?.value,
-		fp: src.resources?.legres?.value,
 	};
 }
 
@@ -130,6 +92,10 @@ function hasAnyDelta(deltas) {
 
 // Attach to actor updates to render processed changes and issue new updates
 Hooks.on("updateActor", (actor, data, opts) => {
+	if (!game.combat?.isActive) {
+		return true;
+	}
+
 	let backoff = 0;
 
 	// Compute deltas from incoming data when not provided by caller
