@@ -7,12 +7,16 @@ import { BCDSettings } from "./settings.js";
  */
 Hooks.on("preUpdateActor", (actor, data) => {
 	// Guard against processing changes outside of combat
-	if (!data || !actor?.id || !game.combat?.isActive) {
-		return;
+	if (!data || !actor?.id || !BCDSettings.scrollTextEnabled || !game.combat?.isActive) {
+		// Allow the update to continue
+		return true;
 	}
 
 	// Capture the actor's values to display future deltas
 	ActorUtils.capturePreUpdateValues(actor, data);
+
+	// Allow the update to continue
+	return true;
 });
 
 /**
@@ -21,7 +25,8 @@ Hooks.on("preUpdateActor", (actor, data) => {
  */
 Hooks.on("updateActor", (actor, data, opts) => {
 	// Guard against processing changes outside of combat
-	if (!game.combat?.isActive) {
+	if (!BCDSettings.scrollTextEnabled || !game.combat?.isActive) {
+		// Allow the update to continue
 		return true;
 	}
 
@@ -38,7 +43,7 @@ Hooks.on("updateActor", (actor, data, opts) => {
 
 	// Display scrolling texts in order: AHP -> THP -> HP -> FP
 	if (Number.isFinite(deltas.ahp) && deltas.ahp !== 0) {
-		if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+		if (BCDSettings.hitPointsEnabled) {
 			ActorUtils.displayScrollingText(
 				actor,
 				deltas.ahp,
@@ -49,7 +54,7 @@ Hooks.on("updateActor", (actor, data, opts) => {
 	}
 
 	if (Number.isFinite(deltas.thp) && deltas.thp !== 0) {
-		if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+		if (BCDSettings.hitPointsEnabled) {
 			ActorUtils.displayScrollingText(
 				actor,
 				deltas.thp,
@@ -60,7 +65,7 @@ Hooks.on("updateActor", (actor, data, opts) => {
 	}
 
 	if (Number.isFinite(deltas.hp) && deltas.hp !== 0) {
-		if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
+		if (BCDSettings.hitPointsEnabled) {
 			const color =
 				deltas.hp <= 0
 					? BCDSettings.hitPointsDamageColor
@@ -70,10 +75,7 @@ Hooks.on("updateActor", (actor, data, opts) => {
 	}
 
 	if (Number.isFinite(deltas.fp) && deltas.fp !== 0) {
-		if (
-			BCDSettings.scrollTextEnabled &&
-			BCDSettings.legendaryResistanceEnabled
-		) {
+		if (BCDSettings.legendaryResistanceEnabled) {
 			ActorUtils.displayScrollingText(
 				actor,
 				deltas.fp,
@@ -83,6 +85,7 @@ Hooks.on("updateActor", (actor, data, opts) => {
 		}
 	}
 
+	// Allow the update to continue
 	return true;
 });
 
