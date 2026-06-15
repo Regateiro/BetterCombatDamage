@@ -1,112 +1,42 @@
 import { ActorUtils } from "./utils.js";
 import { BCDSettings } from "./settings.js";
 
-// Storage for pre-update values captured in preUpdateActor hook.
-// Keyed by actor.id so concurrent updates on different actors don't interfere.
-const _preUpdateValues = new Map();
-
-// Capture old HP/AHP/THP/Fp values BEFORE any updates are applied.
-// Fires only for the client initiating the update (before system data is mutated).
+/**
+ * Snapshot current HP/AHP/THP/Fp values before an actor update.
+ * Only fires for the initiating client during active combat.
+ */
 Hooks.on("preUpdateActor", (actor, data) => {
+	// Guard against processing changes outside of combat
 	if (!data || !actor?.id || !game.combat?.isActive) {
 		return;
 	}
 
-	const hp = actor.system.attributes.hp ?? {};
-	const fp = actor.system.resources?.legres ?? {};
-
-	_preUpdateValues.set(actor.id, {
-		hp: getDataValue(data, "system.attributes.hp.value") !== undefined
-			? hp.value || 0
-			: undefined,
-		ahp: getDataValue(data, "system.attributes.hp.armor") !== undefined
-			? hp.armor || 0
-			: undefined,
-		thp: getDataValue(data, "system.attributes.hp.temp") !== undefined
-			? hp.temp || 0
-			: undefined,
-		fp: getDataValue(data, "system.resources.legres.value") !== undefined
-			? (fp?.value ?? 0)
-			: undefined,
-	});
+	// Capture the actor's values to display future deltas
+	ActorUtils.capturePreUpdateValues(actor, data);
 });
 
-// Helper: get a value from nested or flat dot-notation keys.
-function getDataValue(data, path) {
-	if (data[path] !== undefined && data[path] !== null) {
-		return data[path];
-	}
-
-	const parts = path.split(".");
-	let current = data;
-	for (const part of parts) {
-		if (current === undefined || current === null || typeof current !== "object") {
-			return undefined;
-		}
-		current = current[part];
-	}
-	return current;
-}
-
-// Helper: compute delta from pre-update values captured in preUpdateActor.
-function computeDeltas(actor, data) {
-	const newVal = getDataValue(data, "system.attributes.hp.value");
-	const newAhp = getDataValue(data, "system.attributes.hp.armor");
-	const newThp = getDataValue(data, "system.attributes.hp.temp");
-	const newFp = getDataValue(data, "system.resources.legres.value");
-
-	const stored = _preUpdateValues.get(actor.id);
-	_preUpdateValues.delete(actor.id);
-	if (!stored) {
-		return null;
-	}
-
-	return {
-		hp:
-			Number.isFinite(newVal) && Number.isFinite(stored.hp)
-				? newVal - stored.hp
-				: undefined,
-		ahp:
-			Number.isFinite(newAhp) && Number.isFinite(stored.ahp)
-				? newAhp - stored.ahp
-				: undefined,
-		thp:
-			Number.isFinite(newThp) && Number.isFinite(stored.thp)
-				? newThp - stored.thp
-				: undefined,
-		fp:
-			Number.isFinite(newFp) && Number.isFinite(stored.fp)
-				? newFp - stored.fp
-				: undefined,
-	};
-}
-
-function hasAnyDelta(deltas) {
-	return (
-		(Number.isFinite(deltas?.ahp) && deltas.ahp !== 0) ||
-		(Number.isFinite(deltas?.thp) && deltas.thp !== 0) ||
-		(Number.isFinite(deltas?.hp) && deltas.hp !== 0) ||
-		(Number.isFinite(deltas?.fp) && deltas.fp !== 0)
-	);
-}
-
-// Attach to actor updates to render processed changes and issue new updates
+/**
+ * After an actor update, display scrolling text for any resource changes.
+ * Displays in order: AHP -> THP -> HP -> FP, with 750ms stagger between each.
+ */
 Hooks.on("updateActor", (actor, data, opts) => {
+	// Guard against processing changes outside of combat
 	if (!game.combat?.isActive) {
 		return true;
 	}
 
+	// Text display delay backoff
 	let backoff = 0;
 
 	// Compute deltas from incoming data when not provided by caller
-	const deltas = opts?.deltas ?? computeDeltas(actor, data);
+	const deltas = opts?.deltas ?? ActorUtils.computeDeltas(actor, data);
 
 	// If there's nothing to display after computing deltas, bail
-	if (!hasAnyDelta(deltas)) {
+	if (!ActorUtils.hasAnyDelta(deltas)) {
 		return true;
 	}
 
-	// Display scrolling texts in order: AHP → THP → HP → FP
+	// Display scrolling texts in order: AHP -> THP -> HP -> FP
 	if (Number.isFinite(deltas.ahp) && deltas.ahp !== 0) {
 		if (BCDSettings.scrollTextEnabled && BCDSettings.hitPointsEnabled) {
 			ActorUtils.displayScrollingText(
@@ -156,7 +86,11 @@ Hooks.on("updateActor", (actor, data, opts) => {
 	return true;
 });
 
-// One time registration steps for settings and core function overrides.
+/**
+ * One-time initialization:
+ * - Register module settings
+ * - Disable Foundry's default _displayScrollingDamage via libWrapper OVERRIDE
+ */
 Hooks.once("init", () => {
 	// Init the settings
 	BCDSettings.init();
