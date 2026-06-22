@@ -2,12 +2,23 @@ import { ActorUtils } from "./utils.js";
 import { BCDSettings } from "./settings.js";
 
 /**
+ * Determines if the module should process updates and show the scrolling text.
+ * @returns True if module is in Enabled mode or in Combat mode and combat is active.
+ */
+function shouldProcessUpdates() {
+	// The module is active in enabled mode or in combat mode and combat is active
+	return BCDSettings.scrollTextEnabled === "Enabled" || (
+	       BCDSettings.scrollTextEnabled === "Combat" && game.combat?.isActive
+	)
+}
+
+/**
  * Snapshot current HP/AHP/THP/Fp values before an actor update.
  * Only fires for the initiating client during active combat.
  */
 Hooks.on("preUpdateActor", (actor, data) => {
 	// Guard against processing changes outside of combat
-	if (!data || !actor?.id || !BCDSettings.scrollTextEnabled || !game.combat?.isActive) {
+	if (!data || !actor?.id || !shouldProcessUpdates()) {
 		// Allow the update to continue
 		return true;
 	}
@@ -25,7 +36,7 @@ Hooks.on("preUpdateActor", (actor, data) => {
  */
 Hooks.on("updateActor", (actor, data, opts) => {
 	// Guard against processing changes outside of combat
-	if (!BCDSettings.scrollTextEnabled || !game.combat?.isActive) {
+	if (!shouldProcessUpdates()) {
 		// Allow the update to continue
 		return true;
 	}

@@ -14,8 +14,13 @@ class Settings {
             hint: "Enables/Disables the scrolling text.",
             scope: "client",
             config: true,
-            default: true,
-            type: Boolean
+            type: String,
+            choices: {
+                "Enabled": "Always Enabled",
+                "Combat": "Combat Only",
+                "Disabled": "Disabled"
+            },
+            default: "Enabled"
         });
 
         game.settings.register("bettercombatdamage", "hitPointsEnabled", {
